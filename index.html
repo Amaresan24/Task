@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./style.css">
+
+</head>
+
+<body>
+    <div class="container">
+        <h2>&nbsp;</h2>
+        <!-- Trigger the modal with a button -->
+        <button type="button" class="btn btn-info btn-lg btn-position" data-toggle="modal" data-target="#myModal">Save
+            Segment</button>
+
+        <!-- Modal -->
+        <div class="modal right fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Save Segment</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="row">
+
+                            <div class="col-sm-12  form-group">
+                                <label for="exampleFormControlInput1">Enter the Name of the segment </label>
+                                <input type="text" id="segmentName" class="form-control" placeholder="Name of the segment"
+                                    name="name_of_segment">
+                            </div>
+                        </div>
+                        <label for="exampleFormControlInput1">To save your segment you need to add the schemas
+                            to build the query.</label>
+                  
+        <div id="schemaContainer">
+            <!-- Initial schema dropdown -->
+            <div class="row">
+                <div class="col-sm-9 form-group">
+                    <select class="form-control schemaDropdown" style="color: #999">
+                        <option value="first_name">First Name</option>
+                        <option value="last_nam">Last Name</option>
+                        <option value="gender">Gender</option>
+                        <option value="age">Age</option>
+                        <option value="city">City</option>
+                        <option value="state">State</option>
+                    </select>
+                </div>
+                <div class="col-sm-3 form-group">
+                    <button class="btn btn-primary removeSchema">-</button>
+                </div>
+            </div>
+        </div>
+
+        <a href="#" id="addSchemaLink">+ Add new schema</a>
+                </div>
+                <footer class="demo-footer">
+                    <button type="button" class="btn btn-success"  id="saveSegmentButton"  >Save Segment </button>
+                    <button type="button" class="btn btn-default close-btn" data-dismiss="modal">Cancel</button>
+                </footer>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+<script src="./index.js"></script>
+<script>
+    // JavaScript for adding and removing schemas
+    document.getElementById('saveSegmentButton').addEventListener('click', function() {
+        // document.getElementById('popup').style.display = 'block';
+    });
+
+    document.getElementById('addSchemaLink').addEventListener('click', function() {
+        const schemaContainer = document.getElementById('schemaContainer');
+        const newSchemaRow = document.createElement('div');
+        newSchemaRow.className = 'row';
+
+        // Create the schema dropdown
+        const schemaDropdown = document.createElement('div');
+        schemaDropdown.className = 'col-sm-9 form-group';
+        schemaDropdown.innerHTML = `
+            <select class="form-control schemaDropdown" style="color: #999">
+                <option value="first_name">First Name</option>
+                        <option value="last_nam">Last Name</option>
+                        <option value="gender">Gender</option>
+                        <option value="age">Age</option>
+                        <option value="city">City</option>
+                        <option value="state">State</option>
+            </select>
+        `;
+        
+        // Create the "Minus" button
+        const removeButton = document.createElement('div');
+        removeButton.className = 'col-sm-3 form-group';
+        removeButton.innerHTML = '<button class="btn btn-primary removeSchema">-</button>';
+
+        newSchemaRow.appendChild(schemaDropdown);
+        newSchemaRow.appendChild(removeButton);
+        schemaContainer.appendChild(newSchemaRow);
+    });
+
+    // Event delegation for removing schemas
+
+    document.getElementById('schemaContainer').addEventListener('click', function(e) {
+    if (e.target.classList.contains('removeSchema')) {
+        e.preventDefault();
+        e.target.parentElement.parentElement.remove();
+    }
+});
+
+    // JavaScript for sending data to the server (unchanged from the previous example)
+    document.getElementById('saveSegmentButton').addEventListener('click', function() {
+        const segmentName = document.getElementById('segmentName').value;
+        const schemaDropdowns = document.querySelectorAll('.schemaDropdown');
+        const selectedSchemas = Array.from(schemaDropdowns).map(dropdown => dropdown.value);
+
+        // Construct the data to send to the server
+        const data = {
+            segmentName: segmentName,
+            selectedSchemas: selectedSchemas
+        };
+
+        // Assuming you have a webhook URL from webhook.site
+        const webhookURL = 'https://webhook.site/your-webhook-url';
+
+        // Send data to the server using a POST request
+        fetch(webhookURL, {
+            method: 'POST',
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Data sent to the server:', data);
+            // You can add success handling here
+        })
+        .catch(error => {
+            console.error('Error sending data:', error);
+            // You can add error handling here
+        });
+    });
+</script>
+
+</html>
